@@ -9,14 +9,25 @@ class Services {
 	/** @var PDO */
 	private $dbConnector;
 
-	public function getDbData($table) {
+	public function getDbData($table, $where = null) {
 		$this->prepareConnector();
 
-		$queryResult = $this->dbConnector->query('SELECT * FROM '.$table);
+		if($where){
+			$query = 'SELECT * FROM ' . $table . ' WHERE ' . $where;
+		}else{
+			$query = 'SELECT * FROM ' . $table;
+		}
+		
+		
+		$queryResult = $this->dbConnector->query($query);
 	
 		$fetchAll = $queryResult->fetchAll(PDO::FETCH_ASSOC);
 		
-		exit(json_encode($fetchAll));
+		$result = array(
+			strtolower($table) => $fetchAll
+		);
+		
+		exit(json_encode($result));
 	}
 
 	private function prepareConnector() {
