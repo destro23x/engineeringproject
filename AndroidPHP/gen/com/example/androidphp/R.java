@@ -25,18 +25,24 @@ public final class R {
     }
     public static final class id {
         public static final int Button01=0x7f080005;
-        public static final int TextView01=0x7f080007;
-        public static final int action_settings=0x7f080008;
+        public static final int action_settings=0x7f08000c;
+        public static final int bntAllActivities=0x7f08000b;
+        public static final int bntAllStudents=0x7f08000a;
+        public static final int name=0x7f080008;
         public static final int password=0x7f080004;
+        public static final int pid=0x7f080007;
         public static final int tv=0x7f080006;
         public static final int tv0=0x7f080000;
         public static final int tv1=0x7f080001;
         public static final int tv2=0x7f080003;
+        public static final int tvLogSuc=0x7f080009;
         public static final int username=0x7f080002;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int userpage=0x7f030001;
+        public static final int all_students=0x7f030001;
+        public static final int list_item=0x7f030002;
+        public static final int userpage=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f070000;

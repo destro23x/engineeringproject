@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
     <TextView
         android:text="Login Success. Welcome in application"
-        android:id="@+id/TextView01"
+        android:id="@+id/tvLogSuc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </TextView>
+
+    <Button
+        android:id="@+id/bntAllStudents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wszyscy kursanci" />
+    
+    <Button
+        android:id="@+id/bntAllActivities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wszystkie zajecia" />
+
 </LinearLayout>

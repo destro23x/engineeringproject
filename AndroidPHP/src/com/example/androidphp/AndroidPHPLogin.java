@@ -1,3 +1,7 @@
+
+
+//Wazne!!! przerobic wszystko na Async Task
+
 package com.example.androidphp;
 
 import android.os.Bundle;
@@ -35,13 +39,14 @@ public class AndroidPHPLogin extends Activity {
     HttpClient httpclient;
     List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
+    
      
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
          
-        b = (Button)findViewById(R.id.Button01);  
+        b = (Button)findViewById(R.id.Button01);
         et = (EditText)findViewById(R.id.username);
         pass= (EditText)findViewById(R.id.password);
         tv = (TextView)findViewById(R.id.tv);
@@ -64,7 +69,7 @@ public class AndroidPHPLogin extends Activity {
         try{            
               
             httpclient=new DefaultHttpClient();
-            httppost= new HttpPost("http://192.168.1.104/check.php");
+            httppost= new HttpPost("http://10.0.0.5/check.php");
             nameValuePairs = new ArrayList<NameValuePair>(2); 
             nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));
             nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim())); 
@@ -86,8 +91,9 @@ public class AndroidPHPLogin extends Activity {
                         Toast.makeText(AndroidPHPLogin.this,"Login Success", Toast.LENGTH_SHORT).show();
                     }
                 });
-                 
-                startActivity(new Intent(AndroidPHPLogin.this, UserPage.class));
+                Intent intent = new Intent(getApplicationContext()/*AndroidPHPLogin.this*/, UserPage.class);
+                intent.putExtra("username", et.getText().toString());
+                startActivity(intent);
             }else{
                 showAlert();                
             }
