@@ -1,15 +1,19 @@
 package com.example.androidphp;
 
-public class Event {
+import java.util.Date;
+
+import android.text.format.DateFormat;
+
+public class Event implements Comparable {
 	String id;
 	String title;
 	String note;
-	String startDate;
-	String endDate;
+	Date startDate;
+	Date endDate;
 	String color;
 	String person;
 	
-	public Event(String id, String title, String note, String startDate, String endDate, String color, String person){
+	public Event(String id, String title, String note, Date startDate, Date endDate, String color, String person){
 		this.id = id;
 		this.title = title;
 		this.note = note;
@@ -20,6 +24,22 @@ public class Event {
 		
 	}
 	
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -38,5 +58,20 @@ public class Event {
 
 	public String toString(){
 		return null; //nie ma zwracac nula
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		Event other = (Event) arg0;
+		if(this.getStartDate().after(other.getStartDate())){
+			return 1;
+		}
+		else if(this.getStartDate().equals(other.getStartDate())){
+			return 0;
+		}
+		else{
+			return -1;
+		}
 	}
 }

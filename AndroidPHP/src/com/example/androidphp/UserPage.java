@@ -11,6 +11,8 @@ public class UserPage extends Activity {
 	String username;
 	Button bntViewStudents;
 	Button bntViewActivities;
+	Button bntNotifications;
+	Button bntMyGroups;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +20,8 @@ public class UserPage extends Activity {
         
         bntViewStudents = (Button) findViewById(R.id.bntAllStudents);
         bntViewActivities = (Button) findViewById(R.id.bntAllActivities);
+        bntNotifications = (Button)findViewById(R.id.bntNotifications);
+        bntMyGroups = (Button)findViewById(R.id.bntGroups);
         
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -40,6 +44,29 @@ public class UserPage extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), AllLeaderActivities.class);
+				intent.putExtra("username", username);
+				startActivity(intent);
+				
+			}
+		});
+        
+        bntNotifications.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getApplicationContext(), NotificationsActivity.class);
+				intent.putExtra("username", username);
+				startActivity(intent);
+				
+			}
+		});
+        bntMyGroups.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getApplicationContext(), AllLeaderGroups.class);
 				intent.putExtra("username", username);
 				startActivity(intent);
 				

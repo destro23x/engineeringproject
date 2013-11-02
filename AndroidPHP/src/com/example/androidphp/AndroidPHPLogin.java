@@ -94,6 +94,7 @@ public class AndroidPHPLogin extends Activity {
                 Intent intent = new Intent(getApplicationContext()/*AndroidPHPLogin.this*/, UserPage.class);
                 intent.putExtra("username", et.getText().toString());
                 startActivity(intent);
+                finish();
             }else{
                 showAlert();                
             }
