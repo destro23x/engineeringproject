@@ -45,7 +45,8 @@ public class AndroidPHPLogin extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         
+        setTitle("siema"); 
+        
         b = (Button)findViewById(R.id.Button01);
         et = (EditText)findViewById(R.id.username);
         pass= (EditText)findViewById(R.id.password);
