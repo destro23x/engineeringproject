@@ -21,8 +21,8 @@ public class SFSSoapClient {
 	private SoapSerializationEnvelope envelope = null;
 	private HttpTransportSE httpTransport = null;
 	private static final String NAMESPACE = "http://tempuri.org/";
-	private static final String WSDL_URL = "http://sfservice.azurewebsites.net/Service1.svc?singleWsdl";
-	private final String ACTION_URL ="http://tempuri.org/IService1/";
+	private static final String WSDL_URL = "http://sfservice.azurewebsites.net/SFSService.svc?singleWsdl";
+	private final String ACTION_URL ="http://tempuri.org/ISFSService/";
 	
 	
 	/***
