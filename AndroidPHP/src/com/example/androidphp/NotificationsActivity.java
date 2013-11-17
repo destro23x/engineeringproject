@@ -8,6 +8,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.sfs.service.SFSService;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -64,6 +66,10 @@ public class NotificationsActivity extends Activity{
 			// TODO Auto-generated method stub
 			String title = editTitle.getText().toString();
 			String description = editDescription.getText().toString();
+			
+			SFSService service = new SFSService();
+			service.addNotification("qwerty", "", pracownikId);
+			
 			
 			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 			parameters.add(new BasicNameValuePair("title",title));
