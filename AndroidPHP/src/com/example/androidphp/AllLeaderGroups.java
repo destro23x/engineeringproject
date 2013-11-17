@@ -14,6 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.sfs.model.Grupa;
+import pl.sfs.service.SFSException;
+import pl.sfs.service.SFSService;
+
 import com.example.androidphp.AllLeaderActivities.LoadAllLeaderActivities;
 
 import android.app.AlertDialog;
@@ -98,6 +102,19 @@ public class AllLeaderGroups extends ListActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
+			SFSService service = new SFSService();
+			try {
+				ArrayList<Grupa> groups2 = service.getGroups();
+				int k = 0;
+			} catch (SFSException sfs) {
+				// TODO Auto-generated catch block
+				sfs.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
             parameters.add(new BasicNameValuePair("leader",leader));
             Log.d("Leader", leader);
