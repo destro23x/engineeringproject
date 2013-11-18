@@ -8,6 +8,7 @@ import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
 import pl.sfs.model.Grupa;
+import pl.sfs.model.Grupa_Kurs;
 import pl.sfs.model.Klient;
 import pl.sfs.model.Konto;
 import pl.sfs.model.Kurs;
@@ -26,7 +27,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste grup
 	 * 
-	 * @return ArrayList<Grupa> lista grup
+	 * @return ArrayList<Grupa> Lista grup
 	 * @throws Exception
 	 */
 	public ArrayList<Grupa> getGroups() throws Exception{		
@@ -56,8 +57,46 @@ public class SFSService {
 	}
 	
 	/***
+	 * Pobiera liste grup dla konkretnego pracownika
+	 * 
+	 * @param workerId Id pracownika
+	 * @return ArrayList<Grupa_Kurs> Lista grup wraz z nazwami kursow
+	 * @throws Exception
+	 */
+	public ArrayList<Grupa_Kurs> getGroupsForUser(int workerId) throws Exception{		
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		String tableName = "Grupy_";
+		
+		Map<Integer, Object[]> params = new HashMap<Integer, Object[]>();
+		
+		params.put(1, new Object[]{"workerId", workerId});
+		
+		ArrayList<Grupa_Kurs> groups = new ArrayList<Grupa_Kurs>();
+		
+		SoapObject response = (SoapObject) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		for (int i = 0; i < response.getPropertyCount(); i++) {
+			SoapObject g = (SoapObject) response.getProperty(i);
+			
+			Grupa_Kurs tmpGroup = new Grupa_Kurs();
+			
+			tmpGroup.setGrupy_ID(Integer.parseInt(g.getPrimitivePropertyAsString(tableName+"ID")));
+			tmpGroup.setGrupy_Aktywny(g.getPrimitivePropertyAsString(tableName+"Aktywny"));
+			tmpGroup.setGrupy_Nazwa(g.getPrimitivePropertyAsString(tableName+"Nazwa"));
+			tmpGroup.setGrupy_Stopien(g.getPrimitivePropertyAsString(tableName+"Stopien"));
+			tmpGroup.setKursy_ID(Integer.parseInt(g.getPrimitivePropertyAsString("Kursy_ID")));
+			tmpGroup.setPracownik_ID(Integer.parseInt(g.getPrimitivePropertyAsString("Pracownik_ID")));
+			tmpGroup.setKursy_Nazwa(g.getPrimitivePropertyAsString("Kursy_Nazwa"));
+			
+			groups.add(tmpGroup);
+		}
+		
+		return groups;
+	}
+	
+	/***
 	 * Pobiera liste klientow
-	 * @return ArrayList<Klient> lista klientow
+	 * @return ArrayList<Klient> Lista klientow
 	 * @throws Exception
 	 */
 	public ArrayList<Klient> getClients() throws Exception{		
@@ -93,9 +132,52 @@ public class SFSService {
 	}
 	
 	/***
+	 * Pobiera liste klientow przypisanych do konkretnej grupy
+	 * 
+	 * @param groupId Id grupy
+	 * @return ArrayList<Klient> Lista klientow w danej grupie
+	 * @throws Exception
+	 */
+	public ArrayList<Klient> getClientsAssingToGroup(int groupId) throws Exception{		
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		String tableName = "Klienci_";
+		
+		ArrayList<Klient> clients = new ArrayList<Klient>();
+		
+		Map<Integer, Object[]> params = new HashMap<Integer, Object[]>();
+		
+		params.put(1, new Object[]{"groupID", groupId});
+		
+		SoapObject response = (SoapObject) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		for (int i = 0; i < response.getPropertyCount(); i++) {
+			SoapObject c = (SoapObject) response.getProperty(i);
+			
+			Klient tmpClient = new Klient();
+			
+			tmpClient.setKlienci_Aktywni(c.getPrimitivePropertyAsString(tableName+"Aktywni"));
+			tmpClient.setKlienci_ID(Integer.parseInt(c.getPrimitivePropertyAsString(tableName+"ID")));
+			tmpClient.setKlienci_Imie(c.getPrimitivePropertyAsString(tableName+"Imie"));
+			tmpClient.setKlienci_Kod(c.getPrimitivePropertyAsString(tableName+"Kod"));
+			tmpClient.setKlienci_Mail(c.getPrimitivePropertyAsString(tableName+"Mail"));
+			tmpClient.setKlienci_Miasto(c.getPrimitivePropertyAsString(tableName+"Miasto"));
+			tmpClient.setKlienci_Nazwisko(c.getPrimitivePropertyAsString(tableName+"Nazwisko"));
+			tmpClient.setKlienci_Numer_domu(c.getPrimitivePropertyAsString(tableName+"Numer_domu"));
+			tmpClient.setKlienci_Pesel(c.getPrimitivePropertyAsString(tableName+"Pesel"));
+			tmpClient.setKlienci_Plec(c.getPrimitivePropertyAsString(tableName+"Plec"));
+			tmpClient.setKlienci_Telefon(c.getPrimitivePropertyAsString(tableName+"Telefon"));
+			tmpClient.setKlienci_Ulica(c.getPrimitivePropertyAsString(tableName+"Ulica"));
+			
+			clients.add(tmpClient);
+		}
+		
+		return clients;
+	}
+	
+	/***
 	 * Pobiera liste kont uzytkownikow
 	 * 
-	 * @return ArrayList<Konto> lista kont uzytkownikow
+	 * @return ArrayList<Konto> Lista kont uzytkownikow
 	 * @throws Exception
 	 */
 	public ArrayList<Konto> getAccounts() throws Exception{		
@@ -124,7 +206,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste kursow
 	 * 
-	 * @return ArrayList<Kurs> lista kursow
+	 * @return ArrayList<Kurs> Lista kursow
 	 * @throws Exception
 	 */
 	public ArrayList<Kurs> getCourses() throws Exception{		
@@ -154,7 +236,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste platnosci w systemie
 	 * 
-	 * @return ArrayList<Oplata> lista platnosci
+	 * @return ArrayList<Oplata> Lista platnosci
 	 * @throws Exception
 	 */
 	public ArrayList<Oplata> getPayments() throws Exception{		
@@ -190,7 +272,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste powiadomien
 	 * 
-	 * @return ArrayList<Powiadomienie> lista powiadomien
+	 * @return ArrayList<Powiadomienie> Lista powiadomien
 	 * @throws Exception
 	 */
 	public ArrayList<Powiadomienie> getNotifications() throws Exception{		
@@ -220,7 +302,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste pracownikow obiektu
 	 * 
-	 * @return ArrayList<Pracownik> lista pracownikow
+	 * @return ArrayList<Pracownik> Lista pracownikow
 	 * @throws Exception
 	 */
 	public ArrayList<Pracownik> getWorkers() throws Exception{		
@@ -259,7 +341,7 @@ public class SFSService {
 	/***
 	 * Pobiera liste wydarzen
 	 * 
-	 * @return ArrayList<Wydarzenie> lista wydarzen
+	 * @return ArrayList<Wydarzenie> Lista wydarzen
 	 * @throws Exception
 	 */
 	public ArrayList<Wydarzenie> getEvents() throws Exception{		
@@ -290,12 +372,50 @@ public class SFSService {
 	}
 	
 	/***
+	 * Pobiera liste wydarzen dla konkretnego pracownika
+	 * 
+	 * @param workerId Id pracownika
+	 * @return ArrayList<Wydarzenie> Lista wydarzen
+	 * @throws Exception
+	 */
+	public ArrayList<Wydarzenie> getEventsForUser(int workerId) throws Exception{		
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		String tableName = "Wydarzenia_";
+		
+		Map<Integer, Object[]> params = new HashMap();
+		
+		params.put(1, new Object[]{"workerId", workerId});
+		
+		ArrayList<Wydarzenie> events = new ArrayList<Wydarzenie>();
+		
+		SoapObject response = (SoapObject) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		for (int i = 0; i < response.getPropertyCount(); i++) {
+			SoapObject e = (SoapObject) response.getProperty(i);
+			
+			Wydarzenie tmpEvent = new Wydarzenie();
+			
+			tmpEvent.setPracownik_ID(Integer.parseInt(e.getPrimitivePropertyAsString("Pracownik_ID")));
+			tmpEvent.setWydarzenia_ID(Integer.parseInt(e.getPrimitivePropertyAsString(tableName+"ID")));
+			tmpEvent.setWydarzenia_Kolor(e.getPrimitivePropertyAsString(tableName+"Kolor"));
+			tmpEvent.setWydarzenia_KoniecDate(e.getPrimitivePropertyAsString(tableName+"KoniecDate"));
+			tmpEvent.setWydarzenia_Notka(e.getPrimitivePropertyAsString(tableName+"Notka"));
+			tmpEvent.setWydarzenia_StartDate(e.getPrimitivePropertyAsString(tableName+"StartDate"));
+			tmpEvent.setWydarzenia_Tytul(e.getPrimitivePropertyAsString(tableName+"Tytul"));
+												
+			events.add(tmpEvent);
+		}
+		
+		return events;
+	}
+	
+	/***
 	 * Dodaje powiadomienie do bazy
 	 * 
 	 * @param title Tytul wiadomosci
 	 * @param text Tresc wiadomosci
 	 * @param pracownikId Id pracownika
-	 * @return true informacja czy udalo sie dodac powiadomienie 
+	 * @return true Informacja czy udalo sie dodac powiadomienie 
 	 * @throws Exception
 	 */
 	public boolean addNotification(String title, String text, int pracownikId) throws Exception{
@@ -313,5 +433,53 @@ public class SFSService {
 		
 		return result;
 	}
+	
+	/***
+	 * Uwierzytelnianie uzytkownika systemu 
+	 * @param login Nazwa uzytkownika
+	 * @param password Haslo uzytkownika
+	 * @return true Jesli uwierzytelniono, false jesli nie
+	 * @throws Exception
+	 */
+	public boolean verifyUser(String login, String password) throws Exception{
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		
+		Map<Integer, Object[]> params = new HashMap();
+		
+		params.put(1, new String[]{"login", login});
+		params.put(2, new String[]{"password", password});
+	
+		SoapPrimitive response = (SoapPrimitive) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		boolean result = Boolean.valueOf(response.toString());
+		
+		return result;
+	}
+	
+	/***
+	 * Pobranie id pracownika do ktorego nalezy konto systemowe
+	 * 
+	 * @param login Nazwa uzytkownika za pomoca ktorej loguje sie do systemu
+	 * @return int Id pracownika w bazie pracownikow, lub 0 jesli konto jest niepowiazane z pracownikiem
+	 * @throws Exception
+	 */
+
+	public int getAssignWorker(String login) throws Exception{
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		
+		Map<Integer, Object[]> params = new HashMap();
+		
+		params.put(1, new String[]{"login", login});
+	
+		SoapPrimitive response = (SoapPrimitive) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		int result = Integer.valueOf(response.toString());
+		
+		return result;
+	}
+	
+	
+	
+	
 
 }
