@@ -18,6 +18,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.sfs.model.Klient;
+import pl.sfs.model.Wydarzenie;
+import pl.sfs.service.SFSException;
+import pl.sfs.service.SFSService;
+
 import com.example.androidphp.AllStudentsActivity.LoadAllStudents;
 
 import android.app.AlertDialog;
@@ -35,18 +40,13 @@ import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class AllLeaderActivities extends ListActivity {
-	static String urlAllEvents = "http://10.0.0.5/getAllLeaderActivities.php";
 	
-	String leader;
+	int workerID;
 	ListView lv;
 	ProgressDialog pDialog;
-	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String,String>> eventsList;
-	ArrayList<Event> eventsList1;
 	
 	//JSON Node names
-	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_EVENTS = "events";
 	private static final String TAG_TITLE = "title";
 	private static final String TAG_PID = "pid";
 	private static final String TAG_NOTE = "note";
@@ -55,19 +55,16 @@ public class AllLeaderActivities extends ListActivity {
 	private static final String TAG_COLOR = "color";
 	private static final String TAG_PERSON = "person";
 	
-	JSONArray events = null;
-	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.all_students);
 		
 		eventsList = new ArrayList<HashMap<String,String>>();
-		eventsList1 = new ArrayList<Event>();
 		lv = getListView();
 		
 		Bundle extras = getIntent().getExtras();
         if(extras != null){
-        	leader = extras.getString("username");
+        	workerID = extras.getInt("workerID");
         }
 		
         lv.setOnItemClickListener(new OnItemClickListener(){
@@ -78,20 +75,15 @@ public class AllLeaderActivities extends ListActivity {
 				// TODO Auto-generated method stub
 				AlertDialog.Builder adb = new AlertDialog.Builder(AllLeaderActivities.this);
 				adb.setTitle("ListView OnClick");
-				adb.setMessage(eventsList1.get(position).toString() +
+				adb.setMessage(eventsList.get(position).toString() +
 						"Selected Item is = "
 				+ lv.getItemAtPosition(position) + " czyli " + position);
 				adb.setPositiveButton("Ok", null);
 				adb.show();               
-				
-				
 			}
 			
 		});
-        
 		new LoadAllLeaderActivities().execute();
-		
-		
 	}
 	
 	class LoadAllLeaderActivities extends AsyncTask<String,String,String>{
@@ -108,72 +100,29 @@ public class AllLeaderActivities extends ListActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-            parameters.add(new BasicNameValuePair("leader",leader));
-            Log.d("Leader", leader);
-			JSONObject json = jsonParser.makeHttpRequest(urlAllEvents, "POST", parameters);
-			Log.d("All events",json.toString());
-			try{
-				int success = json.getInt(TAG_SUCCESS);
-				Log.d("Success", String.valueOf(success));
-				if (success == 1){
-					events = json.getJSONArray(TAG_EVENTS);
-					for(int i = 0; i < events.length(); i++ ){
-						JSONObject c = events.getJSONObject(i);
-						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						Date startDate = null;
-						Date endDate = null;
-						try {
-							startDate = format.parse(c.getString(TAG_START_DATE));
-							endDate = format.parse(c.getString(TAG_END_DATE));
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (new Date().before(startDate)){
-							Event temp = new Event(c.getString(TAG_PID),c.getString(TAG_TITLE),c.getString(TAG_NOTE), startDate /*c.getString(TAG_START_DATE)*/,endDate/*c.getString(TAG_END_DATE)*/,c.getString(TAG_COLOR),c.getString(TAG_PERSON));
-							eventsList1.add(temp);
-							
-							//String title = c.getString(TAG_TITLE);
-							//String id = c.getString(TAG_PID);
-							//Log.d("Title", temp.getTitle());
-							//Log.d("Id",temp.getId());
-							//HashMap<String,String> map = new HashMap<String,String>();
-							//map.put(TAG_PID, temp.getId());
-							//map.put(TAG_TITLE, temp.getTitle());
-							//map.put(TAG_START_DATE, temp.getStartDate().toString());
-							//eventsList.add(map);
-						}
-					}
-					
-					Collections.sort(eventsList1);
-					for(Event temp : eventsList1){
-						HashMap<String,String> map = new HashMap<String,String>();
-						map.put(TAG_PID, temp.getId());
-						map.put(TAG_TITLE, temp.getTitle());
-						map.put(TAG_START_DATE, temp.getStartDate().toString());
-						Log.d("Title", temp.getTitle());
-						Log.d("Id",temp.getId());
-						eventsList.add(map);
-						System.out.println(temp.getTitle());
-					}
-					//System.out.println(eventsList1.toString());
-					/*Iterator<Event> iterator = eventsList1.iterator();
-					while(iterator.hasNext()){
-						HashMap<String,String> map = new HashMap<String,String>();
-						map.put(TAG_PID, iterator.next().getId());
-						map.put(TAG_TITLE, iterator.next().getTitle());
-						map.put(TAG_START_DATE, iterator.next().getStartDate().toString());
-						Log.d("Title", iterator.next().getTitle());
-						Log.d("Id",iterator.next().getId());
-						eventsList.add(map);
-						//eventsList.get(1).
-					}*/
-				}else{
-					// No student found launch the new student activity
+			
+			SFSService service = new SFSService();
+			
+			try {
+				ArrayList<Wydarzenie> events = service.getEventsForUser(workerID);
+				Collections.sort(events);
+				Log.d("sciema","niema");
+				for(int i = 0 ; i < events.size(); i++){
+					Wydarzenie temp = events.get(i);
+					HashMap<String,String> map = new HashMap<String,String>();
+					map.put(TAG_PID, temp.getWydarzenia_ID().toString());
+					map.put(TAG_TITLE, temp.getWydarzenia_Tytul().toString());
+					map.put(TAG_START_DATE, temp.getWydarzenia_StartDate().toString());
+					eventsList.add(map);
 				}
-			} catch (JSONException e){
+			} catch (SFSException sfs) {
+				// TODO Auto-generated catch block
+				sfs.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ dane jeszcze raz zwróciæ wartoœæ jak¹æ do g³ównej aktywnoœci
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ jeszcze raz
 			}
 			
 			return null;

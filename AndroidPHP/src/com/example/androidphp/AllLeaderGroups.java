@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.sfs.model.Grupa;
+import pl.sfs.model.Grupa_Kurs;
 import pl.sfs.service.SFSException;
 import pl.sfs.service.SFSService;
 
@@ -37,26 +38,16 @@ import android.widget.Toast;
 
 public class AllLeaderGroups extends ListActivity {
 
-	
-	static String urlAllGroups = "http://10.0.0.5/getAllLeaderGroups.php";
-	
-	String leader;
+	int workerID;
 	ListView lv;
 	ProgressDialog pDialog;
-	JSONParser jsonParser = new JSONParser();
 	ArrayList<HashMap<String,String>> groupsList;
-	ArrayList<Group> groupsList1;
 	
-	//JSON Node names
-	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_GROUPS = "groups";
 	private static final String TAG_PIDGROUP = "pidgroup";
 	private static final String TAG_PIDCOURSE = "pidcourse";
 	private static final String TAG_GROUPNAME = "groupname";
 	private static final String TAG_GROUPACTIVE = "groupactive";
 	private static final String TAG_GROUPLEVEL = "grouplevel";
-	
-	JSONArray groups = null;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -64,11 +55,10 @@ public class AllLeaderGroups extends ListActivity {
 		
 		Bundle extras = getIntent().getExtras();
         if(extras != null){
-        	leader = extras.getString("username");
+        	workerID = extras.getInt("workerID");
         }
         
 		groupsList = new ArrayList<HashMap<String,String>>();
-		groupsList1 = new ArrayList<Group>();
 		lv = getListView();
 		
         lv.setOnItemClickListener(new OnItemClickListener(){
@@ -78,7 +68,8 @@ public class AllLeaderGroups extends ListActivity {
 					long arg3) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), ContentGroup.class);
-				intent.putExtra("group", groupsList1.get(position).getIdGroup());
+				Log.d("System", groupsList.get(position).get(TAG_PIDGROUP).toString());
+				intent.putExtra("groupID", Integer.valueOf(groupsList.get(position).get(TAG_PIDGROUP)));
 				startActivity(intent);
 					
 			}
@@ -104,47 +95,23 @@ public class AllLeaderGroups extends ListActivity {
 			// TODO Auto-generated method stub
 			SFSService service = new SFSService();
 			try {
-				ArrayList<Grupa> groups2 = service.getGroups();
+				ArrayList<Grupa_Kurs> groups = service.getGroupsForUser(workerID);                 
 				int k = 0;
+				for(int i = 0 ; i < groups.size(); i++){
+					Grupa temp = groups.get(i);
+					HashMap<String,String> map = new HashMap<String,String>();
+					map.put(TAG_PIDGROUP, temp.getGrupy_ID().toString());
+					map.put(TAG_GROUPNAME, temp.getGrupy_Nazwa().toString());
+					groupsList.add(map);
+				}
 			} catch (SFSException sfs) {
 				// TODO Auto-generated catch block
 				sfs.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ dane jeszcze raz zwróciæ wartoœæ jak¹æ do g³ównej aktywnoœci
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			
-			
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-            parameters.add(new BasicNameValuePair("leader",leader));
-            Log.d("Leader", leader);
-			JSONObject json = jsonParser.makeHttpRequest(urlAllGroups, "POST", parameters);
-			Log.d("All groups",json.toString());
-			try{
-				int success = json.getInt(TAG_SUCCESS);
-				Log.d("Success", String.valueOf(success));
-				if (success == 1){
-					groups = json.getJSONArray(TAG_GROUPS);
-					for(int i = 0; i < groups.length(); i++ ){
-						JSONObject c = groups.getJSONObject(i);
-						Group temp = new Group(c.getString(TAG_PIDGROUP),c.getString(TAG_PIDCOURSE),c.getString(TAG_GROUPNAME),c.getString(TAG_GROUPACTIVE),c.getString(TAG_GROUPLEVEL));
-						groupsList1.add(temp);
-						Log.d("Name",temp.groupName);
-						Log.d("Id",temp.getIdGroup());
-						HashMap<String,String> map = new HashMap<String,String>();
-						map.put(TAG_PIDGROUP, temp.getIdGroup());
-						map.put(TAG_GROUPNAME, temp.getGroupName());
-						
-						groupsList.add(map);
-						
-					}
-					
-					
-				}else{
-					// no group found launch the new group activity
-				}
-			} catch (JSONException e){
-				e.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ jeszcze raz
 			}
 			
 			return null;
@@ -157,7 +124,7 @@ public class AllLeaderGroups extends ListActivity {
 					ListAdapter adapter = new SimpleAdapter(
 							AllLeaderGroups.this,groupsList,R.layout.list_item, new String[] {TAG_PIDGROUP,TAG_GROUPNAME},new int[]{R.id.pid,R.id.name});
 					setListAdapter(adapter);
-					
+				
 				}
 			});
 		}

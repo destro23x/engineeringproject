@@ -1,6 +1,12 @@
 package pl.sfs.model;
 
-public class Wydarzenie {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.annotation.SuppressLint;
+
+public class Wydarzenie implements Comparable {
 	 private java.lang.Integer pracownik_ID;
 
 	 private java.lang.Integer wydarzenia_ID;
@@ -69,6 +75,33 @@ public class Wydarzenie {
 
 	public void setWydarzenia_Tytul(java.lang.String wydarzenia_Tytul) {
 		this.wydarzenia_Tytul = wydarzenia_Tytul;
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		Wydarzenie other = (Wydarzenie) arg0;
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss aa");
+		Date startDateOther = null;
+		Date startDateThis = null;
+		try {
+			startDateOther = format.parse(other.getWydarzenia_StartDate());
+			startDateThis = format.parse(this.getWydarzenia_StartDate());
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(startDateThis.after(startDateOther)){
+			return 1;
+		}
+		else if(startDateThis.equals(startDateOther)){
+			return 0;
+		}
+		else{
+			return -1;
+		}
 	}
 	 
 }

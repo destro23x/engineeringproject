@@ -21,13 +21,11 @@ import android.widget.EditText;
 
 public class NotificationsActivity extends Activity{
 	
+	int workerID;
 	private ProgressDialog pDialog;
-	JSONParser jsonParser = new JSONParser();
 	EditText editTitle;
 	EditText editDescription;
 	Button bntSend;
-	
-	private static String url_create_notification = "http://10.0.0.5/createNotifications.php";
 	
 	private static final String TAG_SUCCESS = "success";
 	private static final String TAG_MESSAGE = "message";
@@ -35,6 +33,11 @@ public class NotificationsActivity extends Activity{
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.notifications);
+		
+		Bundle extras = getIntent().getExtras();
+        if(extras != null){
+        	workerID = extras.getInt("workerID");
+        }
 		
 		editTitle = (EditText)findViewById(R.id.editTitle);
 		editDescription = (EditText)findViewById(R.id.editDescribe);
@@ -68,29 +71,13 @@ public class NotificationsActivity extends Activity{
 			String description = editDescription.getText().toString();
 			
 			SFSService service = new SFSService();
-			service.addNotification("qwerty", "", pracownikId);
-			
-			
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			parameters.add(new BasicNameValuePair("title",title));
-			parameters.add(new BasicNameValuePair("description",description));
-			JSONObject json = jsonParser.makeHttpRequest(url_create_notification,
-					"POST", parameters);
-			Log.d("Create notification",json.toString());
 			try {
-				int success = json.getInt(TAG_SUCCESS);
-
-				if (success == 1) {
-					// successfully created product
-					
-					// closing this screen
-					finish();
-				} else {
-					// failed to create product
-				}
-			} catch (JSONException e) {
+				service.addNotification(title,description,workerID);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			finish();
 			return null;
 		}
 		

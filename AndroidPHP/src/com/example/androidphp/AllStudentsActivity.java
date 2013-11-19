@@ -1,6 +1,7 @@
 package com.example.androidphp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,6 +9,11 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import pl.sfs.model.Klient;
+import pl.sfs.model.Wydarzenie;
+import pl.sfs.service.SFSException;
+import pl.sfs.service.SFSService;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -24,18 +30,13 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class AllStudentsActivity extends ListActivity {
-
-	static String urlAllStudents = "http://10.0.0.5/getAllStudents.php";
 	
 	ListView lv;
 	ProgressDialog pDialog;
-	JSONParser jsonParser = new JSONParser();
+
 	ArrayList<HashMap<String,String>> studentsList;
-	ArrayList<Student> studentsList1;
 	
 	//JSON Node names
-	private static final String TAG_SUCCESS = "success";
-	private static final String TAG_STUDENTS = "students";
 	private static final String TAG_NAME = "name";
 	private static final String TAG_PID = "pid";
 	private static final String TAG_SURNAME = "surname";
@@ -54,7 +55,6 @@ public class AllStudentsActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.all_students);
 		studentsList = new ArrayList<HashMap<String,String>>();
-		studentsList1 = new ArrayList<Student>();
 		lv = getListView();
 		new LoadAllStudents().execute();
 		
@@ -64,13 +64,10 @@ public class AllStudentsActivity extends ListActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				// TODO Auto-generated method stub
-				String pid = arg1.findViewById(R.id.pid).toString();
-				
-				
-				
+
 				AlertDialog.Builder adb = new AlertDialog.Builder(AllStudentsActivity.this);
 				adb.setTitle("ListView OnClick");
-				adb.setMessage(studentsList1.get(position).toString() +
+				adb.setMessage(studentsList.get(position).toString() +
 						"Selected Item is = "
 				+ lv.getItemAtPosition(position) + " czyli " + position);
 				adb.setPositiveButton("Ok", null);
@@ -96,33 +93,25 @@ public class AllStudentsActivity extends ListActivity {
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-			JSONObject json = jsonParser.makeHttpRequest(urlAllStudents, "GET", parameters);
-			Log.d("All students",json.toString());
-			try{
-				int success = json.getInt(TAG_SUCCESS);
-				Log.d("Success", String.valueOf(success));
-				if (success == 1){
-					students = json.getJSONArray(TAG_STUDENTS);
-					for(int i = 0; i < students.length(); i++ ){
-						JSONObject c = students.getJSONObject(i);
-						Student temp = new Student(c.getString(TAG_PID),c.getString(TAG_NAME),c.getString(TAG_SURNAME),c.getString(TAG_PESEL),c.getString(TAG_PHONE),c.getString(TAG_MAIL),c.getString(TAG_STREET),c.getString(TAG_CITY), c.getString(TAG_HOUSE_NUMBER), c.getString(TAG_CITYCODE), c.getString(TAG_ACTIVE));
-						studentsList1.add(temp);
-						//String name = c.getString(TAG_NAME);
-						//String id = c.getString(TAG_PID);
-						Log.d("Name",temp.getId());
-						Log.d("Id",temp.getName());
-						HashMap<String,String> map = new HashMap<String,String>();
-						map.put(TAG_PID, temp.getId());
-						map.put(TAG_NAME, temp.getName());
-						
-						studentsList.add(map);
-					}
-				}else{
-					// No student found launch the new student activity
+			SFSService service = new SFSService();
+			try {
+				ArrayList<Klient> students = service.getClients();
+				for(int i = 0 ; i < students.size(); i++){
+					Klient temp = students.get(i);
+					HashMap<String,String> map = new HashMap<String,String>();
+					map.put(TAG_PID, temp.getKlienci_ID().toString());
+					map.put(TAG_NAME, temp.getKlienci_Imie().toString());
+					map.put(TAG_SURNAME, temp.getKlienci_Nazwisko().toString());
+					studentsList.add(map);
 				}
-			} catch (JSONException e){
+			} catch (SFSException sfs) {
+				// TODO Auto-generated catch block
+				sfs.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ dane jeszcze raz zwróciæ wartoœæ jak¹æ do g³ównej aktywnoœci
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
+				//Wyswietlenie informacji zeby pobra³ jeszcze raz
 			}
 			
 			return null;

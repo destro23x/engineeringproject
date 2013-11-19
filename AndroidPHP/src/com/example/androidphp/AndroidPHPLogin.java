@@ -1,23 +1,9 @@
-
-
-//Wazne!!! przerobic wszystko na Async Task
-
 package com.example.androidphp;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import pl.sfs.service.SFSService;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -30,25 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
  
 public class AndroidPHPLogin extends Activity {
-    Button b;
-    EditText et,pass;
+    
+	Button b;
+    EditText login,pass;
     TextView tv;
-    HttpPost httppost;
-    StringBuffer buffer;
-    HttpResponse response;
-    HttpClient httpclient;
-    List<NameValuePair> nameValuePairs;
     ProgressDialog dialog = null;
     
-     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("siema"); 
+        //setTitle("siema"); 
         
         b = (Button)findViewById(R.id.Button01);
-        et = (EditText)findViewById(R.id.username);
+        login = (EditText)findViewById(R.id.username);
         pass= (EditText)findViewById(R.id.password);
         tv = (TextView)findViewById(R.id.tv);
          
@@ -67,33 +48,31 @@ public class AndroidPHPLogin extends Activity {
     }
      
     void login(){
-        try{            
-              
-            httpclient=new DefaultHttpClient();
-            httppost= new HttpPost("http://10.0.0.5/check.php");
-            nameValuePairs = new ArrayList<NameValuePair>(2); 
-            nameValuePairs.add(new BasicNameValuePair("username",et.getText().toString().trim()));
-            nameValuePairs.add(new BasicNameValuePair("password",pass.getText().toString().trim())); 
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            response=httpclient.execute(httppost);
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
-            final String response = httpclient.execute(httppost, responseHandler);
+        try{  
+        	final boolean response;
+        	SFSService service = new SFSService();
+        	response = service.verifyUser(login.getText().toString(), pass.getText().toString());
             System.out.println("Response : " + response); 
             runOnUiThread(new Runnable() {
                 public void run() {
-                    tv.setText("Response from PHP : " + response);
+                	if(response == true){
+                		tv.setText("User authenticated");
+                	}
+                	else{
+                		tv.setText("User not found");
+                	}
                     dialog.dismiss();
                 }
             });
              
-            if(response.equalsIgnoreCase("User Found")){
+            if(response == true){
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(AndroidPHPLogin.this,"Login Success", Toast.LENGTH_SHORT).show();
                     }
                 });
                 Intent intent = new Intent(getApplicationContext()/*AndroidPHPLogin.this*/, UserPage.class);
-                intent.putExtra("username", et.getText().toString());
+                intent.putExtra("workerID", service.getAssignWorker(login.getText().toString()));
                 startActivity(intent);
                 finish();
             }else{
@@ -105,6 +84,7 @@ public class AndroidPHPLogin extends Activity {
             System.out.println("Exception : " + e.getMessage());
         }
     }
+    
     public void showAlert(){
         AndroidPHPLogin.this.runOnUiThread(new Runnable() {
             public void run() {

@@ -8,7 +8,7 @@ import android.widget.Button;
  
 public class UserPage extends Activity {
  
-	String username;
+	int workerID;
 	Button bntViewStudents;
 	Button bntViewActivities;
 	Button bntNotifications;
@@ -25,7 +25,7 @@ public class UserPage extends Activity {
         
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-        	username = extras.getString("username");
+        	workerID = extras.getInt("workerID");
         }
         
         bntViewStudents.setOnClickListener(new View.OnClickListener() {
@@ -44,7 +44,7 @@ public class UserPage extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), AllLeaderActivities.class);
-				intent.putExtra("username", username);
+				intent.putExtra("workerID", workerID);
 				startActivity(intent);
 				
 			}
@@ -56,7 +56,7 @@ public class UserPage extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), NotificationsActivity.class);
-				intent.putExtra("username", username);
+				intent.putExtra("workerID", workerID);
 				startActivity(intent);
 				
 			}
@@ -67,7 +67,7 @@ public class UserPage extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), AllLeaderGroups.class);
-				intent.putExtra("username", username);
+				intent.putExtra("workerID", workerID);
 				startActivity(intent);
 				
 			}
