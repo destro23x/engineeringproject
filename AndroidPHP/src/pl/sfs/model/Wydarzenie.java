@@ -8,6 +8,8 @@ import android.annotation.SuppressLint;
 
 public class Wydarzenie implements Comparable {
 	 private java.lang.Integer pracownik_ID;
+	 
+	 private java.lang.Integer grupa_ID;
 
 	 private java.lang.Integer wydarzenia_ID;
 
@@ -17,7 +19,15 @@ public class Wydarzenie implements Comparable {
 
 	 private java.lang.String wydarzenia_Notka;
 
-	 private java.lang.String wydarzenia_StartDate;
+	 public java.lang.Integer getGrupa_ID() {
+		return grupa_ID;
+	}
+
+	public void setGrupa_ID(java.lang.Integer grupa_ID) {
+		this.grupa_ID = grupa_ID;
+	}
+
+	private java.lang.String wydarzenia_StartDate;
 
 	 private java.lang.String wydarzenia_Tytul;
 

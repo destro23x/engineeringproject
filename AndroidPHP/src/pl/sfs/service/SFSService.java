@@ -341,6 +341,8 @@ public class SFSService {
 	/***
 	 * Pobiera liste wydarzen
 	 * 
+	 * Wydarzenie moze nie miec przypisanej grupy, w takim przypadku jest to wartosc 0
+	 * 
 	 * @return ArrayList<Wydarzenie> Lista wydarzen
 	 * @throws Exception
 	 */
@@ -364,7 +366,8 @@ public class SFSService {
 			tmpEvent.setWydarzenia_Notka(e.getPrimitivePropertyAsString(tableName+"Notka"));
 			tmpEvent.setWydarzenia_StartDate(e.getPrimitivePropertyAsString(tableName+"StartDate"));
 			tmpEvent.setWydarzenia_Tytul(e.getPrimitivePropertyAsString(tableName+"Tytul"));
-												
+			tmpEvent.setGrupa_ID(Integer.parseInt(e.getPrimitivePropertyAsString("Grupy_ID")));
+			
 			events.add(tmpEvent);
 		}
 		
