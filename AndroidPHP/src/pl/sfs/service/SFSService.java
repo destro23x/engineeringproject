@@ -2,7 +2,12 @@ package pl.sfs.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
@@ -405,6 +410,7 @@ public class SFSService {
 			tmpEvent.setWydarzenia_Notka(e.getPrimitivePropertyAsString(tableName+"Notka"));
 			tmpEvent.setWydarzenia_StartDate(e.getPrimitivePropertyAsString(tableName+"StartDate"));
 			tmpEvent.setWydarzenia_Tytul(e.getPrimitivePropertyAsString(tableName+"Tytul"));
+			tmpEvent.setGrupa_ID(Integer.parseInt(e.getPrimitivePropertyAsString("Grupy_ID")));
 												
 			events.add(tmpEvent);
 		}
@@ -477,6 +483,50 @@ public class SFSService {
 		SoapPrimitive response = (SoapPrimitive) SFSSoapClient.getInstace().soapCall(methodName, params);
 		
 		int result = Integer.valueOf(response.toString());
+		
+		return result;
+	}
+	
+	/***
+	 * Dodanie lub uaktualnienie listy obecnosci na zajeciach
+	 * 
+	 * @param presenceId ID listy obecnosci w bazie 0 - dla nowej
+	 * @param eventId ID wydarzenia powiazanego z lista
+	 * @param workerId ID pracownika sprawdzajacego obecnosc
+	 * @param presenceList Lista obecnosci w postaci mapy k=ID klienta, v=true|false
+	 * @return boolean true jesli udalo sie zapisac
+	 * @throws Exception
+	 */
+	public boolean checkPresence(int presenceId, int eventId, int workerId, Map<Integer, Boolean> presenceList) throws Exception{
+		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+		
+		String list="";
+		
+		Set<Entry<Integer, Boolean>> entrySet = presenceList.entrySet();
+		
+		for (Iterator<Entry<Integer, Boolean>> iterator = entrySet.iterator(); iterator.hasNext();) {
+			Entry<Integer, Boolean> entry = (Entry<Integer, Boolean>) iterator
+					.next();
+			
+			
+			list = list.concat(entry.getKey().toString());
+			list = list.concat("=");
+			list = list.concat((entry.getValue()) ? "T" : "N");
+			list = list.concat(";");
+			
+		}
+		
+		SortedMap<Integer, Object[]> params = new TreeMap<Integer, Object[]>();
+		
+		params.put(1, new Object[]{"presenceId", (presenceId==0) ? 0 : presenceId});
+		params.put(2, new Object[]{"eventId", eventId});
+		params.put(3, new Object[]{"workerId", workerId});
+		params.put(4, new Object[]{"presenceList", list});
+	
+		
+		SoapPrimitive response = (SoapPrimitive) SFSSoapClient.getInstace().soapCall(methodName, params);
+		
+		boolean result = Boolean.valueOf(response.toString());
 		
 		return result;
 	}
