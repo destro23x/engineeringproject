@@ -15,6 +15,7 @@ public class UserPage extends Activity {
 	Button bntNotifications;
 	Button bntNotificationsRead;
 	Button bntMyGroups;
+	Button presenceBtn;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,7 @@ public class UserPage extends Activity {
         bntNotifications = (Button)findViewById(R.id.bntNotifications);
         bntNotificationsRead = (Button)findViewById(R.id.bntNotificationsRead);
         bntMyGroups = (Button)findViewById(R.id.bntGroups);
+        presenceBtn = (Button)findViewById(R.id.presenceBtn);
         
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -80,6 +82,19 @@ public class UserPage extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), AllLeaderGroups.class);
 				intent.putExtra("workerID", workerID);
+				startActivity(intent);
+				
+			}
+		});
+        
+        presenceBtn.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+	
+				Intent intent = new Intent(getApplicationContext(), LessonsActivity.class);
+				intent.putExtra("workerId", 3);
 				startActivity(intent);
 				
 			}
