@@ -381,6 +381,7 @@ public class SFSService {
 	
 	/***
 	 * Pobiera liste wydarzen dla konkretnego pracownika
+	 * Sa to tylko wydarzenia dotyczace zajec!
 	 * 
 	 * @param workerId Id pracownika
 	 * @return ArrayList<Wydarzenie> Lista wydarzen
