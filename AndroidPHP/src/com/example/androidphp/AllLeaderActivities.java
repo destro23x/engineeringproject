@@ -28,6 +28,7 @@ import com.example.androidphp.AllStudentsActivity.LoadAllStudents;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.CalendarContract.Events;
@@ -54,6 +55,7 @@ public class AllLeaderActivities extends ListActivity {
 	private static final String TAG_END_DATE = "endDate";
 	private static final String TAG_COLOR = "color";
 	private static final String TAG_PERSON = "person";
+	private static final String TAG_GROUPID = "groupid";
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -73,13 +75,10 @@ public class AllLeaderActivities extends ListActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				// TODO Auto-generated method stub
-				AlertDialog.Builder adb = new AlertDialog.Builder(AllLeaderActivities.this);
-				adb.setTitle("ListView OnClick");
-				adb.setMessage(eventsList.get(position).toString() +
-						"Selected Item is = "
-				+ lv.getItemAtPosition(position) + " czyli " + position);
-				adb.setPositiveButton("Ok", null);
-				adb.show();               
+				Intent intent = new Intent(getApplicationContext(), PresentActivity.class);
+				Log.d("System", eventsList.get(position).get(TAG_PID).toString());
+				intent.putExtra("groupID", Integer.valueOf(eventsList.get(position).get(TAG_GROUPID)));
+				startActivity(intent);      
 			}
 			
 		});
@@ -113,6 +112,7 @@ public class AllLeaderActivities extends ListActivity {
 					map.put(TAG_PID, temp.getWydarzenia_ID().toString());
 					map.put(TAG_TITLE, temp.getWydarzenia_Tytul().toString());
 					map.put(TAG_START_DATE, temp.getWydarzenia_StartDate().toString());
+					map.put(TAG_GROUPID, temp.getGrupa_ID().toString());
 					eventsList.add(map);
 				}
 			} catch (SFSException sfs) {
