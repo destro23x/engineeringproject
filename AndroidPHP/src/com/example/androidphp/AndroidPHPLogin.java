@@ -74,7 +74,7 @@ public class AndroidPHPLogin extends Activity {
                 Intent intent = new Intent(getApplicationContext()/*AndroidPHPLogin.this*/, UserPage.class);
                 intent.putExtra("workerID", service.getAssignWorker(login.getText().toString()));
                 startActivity(intent);
-                finish();
+                //finish();
             }else{
                 showAlert();                
             }
