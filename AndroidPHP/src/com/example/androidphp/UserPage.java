@@ -3,6 +3,7 @@ package com.example.androidphp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
  
@@ -12,6 +13,7 @@ public class UserPage extends Activity {
 	Button bntViewStudents;
 	Button bntViewActivities;
 	Button bntNotifications;
+	Button bntNotificationsRead;
 	Button bntMyGroups;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class UserPage extends Activity {
         bntViewStudents = (Button) findViewById(R.id.bntAllStudents);
         bntViewActivities = (Button) findViewById(R.id.bntAllActivities);
         bntNotifications = (Button)findViewById(R.id.bntNotifications);
+        bntNotificationsRead = (Button)findViewById(R.id.bntNotificationsRead);
         bntMyGroups = (Button)findViewById(R.id.bntGroups);
         
         Bundle extras = getIntent().getExtras();
@@ -37,7 +40,7 @@ public class UserPage extends Activity {
 				
 			}
 		});
-        
+        bntViewStudents.setHint("lolololo");
         bntViewActivities.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -61,6 +64,15 @@ public class UserPage extends Activity {
 				
 			}
 		});
+        
+        bntNotificationsRead.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(getApplicationContext(), NotificationsReadActivity.class));
+			}
+		});
+        
         bntMyGroups.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
