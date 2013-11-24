@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
   
     <TextView
         android:text="Login Success. Welcome in application"
@@ -14,33 +13,39 @@
 
     <Button
         android:id="@+id/bntAllStudents"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Wszyscy kursanci" />
     
     <Button
         android:id="@+id/bntAllActivities"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Wszystkie zajecia" />
     
     <Button
         android:id="@+id/bntNotifications"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Notyfikacje Wyślij" />
     
     <Button
         android:id="@+id/bntNotificationsRead"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Notyfikacje Podgląd" />
 
     <Button
         android:id="@+id/bntGroups"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Moje Grupy" />
     
+
+    <Button
+        android:id="@+id/presenceBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Sprawdź obecność" />
 
 </LinearLayout>
