@@ -28,12 +28,19 @@
         android:id="@+id/bntNotifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notyfikacje" />
+        android:text="Notyfikacje Wyślij" />
+    
+    <Button
+        android:id="@+id/bntNotificationsRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notyfikacje Podgląd" />
 
     <Button
         android:id="@+id/bntGroups"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Moje Grupy" />
+    
 
 </LinearLayout>
