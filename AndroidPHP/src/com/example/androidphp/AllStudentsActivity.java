@@ -49,7 +49,6 @@ public class AllStudentsActivity extends ListActivity {
 	private static final String TAG_HOUSE_NUMBER = "houseNumber";
 	private static final String TAG_CITYCODE = "cityCode";
 	private static final String TAG_ACTIVE = "active";
-	JSONArray students = null;
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
