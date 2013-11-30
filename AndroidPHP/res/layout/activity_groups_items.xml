@@ -2,39 +2,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" > ;<!-- vertical -->
-
-    <!-- Product id (pid) - will be HIDDEN - used to pass to other activity -->
-    <TextView
-        android:id="@+id/pid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:textSize="17dip"
-        android:textStyle="bold"
-        
-         /> <!-- android:visibility="gone" -->
-
-
-    <!-- Name Label -->
+    android:orientation="vertical" >
+    
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/pid"
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:textSize="17dip"
         android:textStyle="bold" />
     
     <TextView
-        android:id="@+id/startDate"
+        android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="250dp"
         android:layout_toRightOf="@+id/name"
         android:textSize="17dip"
         android:textStyle="bold" />
-
+    
+    <TextView
+        android:id="@+id/active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="500dp"
+        android:layout_toRightOf="@+id/level"
+        android:textSize="17dip"
+        android:textStyle="bold" />
+    
 </RelativeLayout>

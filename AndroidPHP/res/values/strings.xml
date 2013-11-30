@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AndroidPHP</string>
+    <string name="app_name">Aplikacja studia tańca</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_presence">Obecności</string>
-    <string name="title_activity_lessons">Moje zaęcia</string>
+    <string name="title_activity_lessons">Moje zajęcia</string>
+    <string name="title_activity_sign_in">Logowanie</string>
+    <string name="title_activity_notifications_read">Lista powiadomień</string>
+    <string name="title_activity_user_page">Memu aplikacji</string>
+    <string name="title_activity_all_students">Lista wszystkich studentów</string>
+    <string name="title_activity_all_leader_events">Moje zajęcia</string>
+    <string name="title_activity_notifications">Wyślij powiadomienie</string>
+    <string name="title_activity_all_groups">Moje grupy</string>
+    <string name="title_activity_content_group">Kursanci grupy</string>
 
 </resources>

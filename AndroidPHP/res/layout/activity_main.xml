@@ -12,6 +12,7 @@
     android:text="Dance Studio"
     android:textSize="30sp"
     android:gravity="center"
+    android:layout_marginTop="40dp"
     android:textStyle="bold"
     />
 
@@ -19,12 +20,14 @@
     android:text=""
     android:id="@+id/username"
     android:layout_width="300dp"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:singleLine="true"
     android:gravity="center"
     android:layout_centerInParent="true"
     android:hint="Login"
+    android:background="@drawable/custom_style_edittext"
     android:layout_below="@id/tv0"
+    android:layout_marginTop="20dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     >
@@ -34,9 +37,11 @@
     android:text=""
     android:id="@+id/password"
     android:layout_width="300dp"
-    android:layout_height="wrap_content"
+    android:layout_height="40dp"
     android:singleLine="true"
     android:inputType="textPassword"
+    android:background="@drawable/custom_style_edittext"
+    android:layout_marginTop="20dp"
     android:ems="10"
     android:gravity="center"
     android:hint="Password"
@@ -46,16 +51,14 @@
 <Button
     android:text="Login"
     android:id="@+id/Button01"
-    android:layout_width="wrap_content"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:layout_below="@id/password">
+    android:layout_below="@id/password"
+    android:layout_centerInParent="true"
+    android:layout_marginTop="20dp"
+    style="@style/btnStylesorbus"
+    >
+    
 </Button>
-<TextView
-    android:id="@+id/tv" 
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text=""
-    android:layout_below="@id/Button01"
-    />
 
 </RelativeLayout>

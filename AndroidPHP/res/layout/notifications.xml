@@ -2,40 +2,81 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background" >
 
-    <TextView
-        android:id="@+id/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tytul" />
+    <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center|center_vertical" >
+	    <TextView
+	        android:id="@+id/textTitle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+	        android:textSize="20dp"
+	        android:text="Tytuł" />
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/editTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10" >
+        android:hint="Tytuł"
+        android:gravity="center"
+        android:ems="10"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_style_edittext" >
 
         <requestFocus />
     </EditText>
 
-    <TextView
-        android:id="@+id/textDescribe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Opis" />
-
+    <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center|center_vertical" >
+	    <TextView
+	        android:id="@+id/textDescribe"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:gravity="center"
+	        android:layout_marginTop="20dp"
+	        android:textSize="20dp"
+	        android:text="Opis" />
+	</RelativeLayout>
     <EditText
         android:id="@+id/editDescribe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textMultiLine" />
+        android:hint="Opis"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:inputType="textMultiLine"
+        android:lines="10"
+        android:background="@drawable/custom_style_edittext" />
 
-    <Button
-        android:id="@+id/buttonSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wyslij" />
+    <RelativeLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center|center_vertical" >
+
+	    <Button
+	        android:id="@+id/buttonSend"
+	        android:layout_width="300dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="20dp"
+	        android:gravity="center"
+	        android:text="Wyślij"
+	        style="@style/btnStylesorbus" />
+
+    </RelativeLayout>
 
 </LinearLayout>
