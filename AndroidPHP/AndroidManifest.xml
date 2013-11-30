@@ -10,104 +10,76 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
-            android:name="com.example.androidphp.AndroidPHPLogin"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.example.androidphp.PresentActivity"
-            android:label="@string/app_name" >
+            android:name="pl.android.studiotanca.LoginActivity"
+            android:label="@string/title_activity_sign_in" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.NotificationsReadActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.NotificationsReadActivity"
+            android:label="@string/title_activity_notifications_read"
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pl.android.studiotanca.UserPageActivity" />   
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.UserPage"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.UserPageActivity"
+            android:label="@string/title_activity_user_page" 
+            android:parentActivityName="pl.android.studiotanca.LoginActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.AllStudentsActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.AllStudentsActivity"
+            android:label="@string/title_activity_all_students"
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.AllLeaderActivities"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.AllLeaderEventsActivity"
+            android:label="@string/title_activity_all_leader_events"
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.NotificationsActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.NotificationsActivity"
+            android:label="@string/title_activity_notifications" 
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.AllLeaderGroups"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.AllLeaderGroupsActivity"
+            android:label="@string/title_activity_all_groups"
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.ContentGroup"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name="pl.android.studiotanca.ContentGroup"
+            android:label="@string/title_activity_content_group" 
+            android:parentActivityName="pl.android.studiotanca.AllLeaderGroupsActivity">
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.PresenceActivity"
+            android:name="pl.android.studiotanca.PresenceActivity"
             android:label="@string/title_activity_presence"
-            android:parentActivityName="com.example.androidphp.UserPage" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.androidphp.UserPage" />
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >
         </activity>
+        
         <activity
-            android:name="com.example.androidphp.LessonsActivity"
+            android:name="pl.android.studiotanca.LessonsActivity"
             android:label="@string/title_activity_lessons"
-            android:parentActivityName="com.example.androidphp.UserPage" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.androidphp.UserPage" />
+            android:parentActivityName="pl.android.studiotanca.UserPageActivity" >   
         </activity>
+        
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" >
