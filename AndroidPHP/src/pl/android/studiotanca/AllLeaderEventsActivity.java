@@ -1,65 +1,42 @@
-package com.example.androidphp;
+package pl.android.studiotanca;
 
-import java.lang.reflect.Array;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import pl.sfs.model.Klient;
 import pl.sfs.model.Wydarzenie;
 import pl.sfs.service.SFSException;
 import pl.sfs.service.SFSService;
-
-import com.example.androidphp.AllStudentsActivity.LoadAllStudents;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.CalendarContract.Events;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class AllLeaderActivities extends ListActivity {
+import com.example.androidphp.R;
+
+public class AllLeaderEventsActivity extends ListActivity {
 	
 	int workerID;
 	ListView lv;
 	ProgressDialog pDialog;
 	ArrayList<HashMap<String,String>> eventsList;
+	ArrayList<Wydarzenie> events;
 	
-	//JSON Node names
 	private static final String TAG_TITLE = "title";
-	private static final String TAG_PID = "pid";
-	private static final String TAG_NOTE = "note";
 	private static final String TAG_START_DATE = "startDate";
 	private static final String TAG_END_DATE = "endDate";
-	private static final String TAG_COLOR = "color";
-	private static final String TAG_PERSON = "person";
 	private static final String TAG_GROUPID = "groupid";
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.all_students);
+		setContentView(R.layout.listview);
 		
 		eventsList = new ArrayList<HashMap<String,String>>();
 		lv = getListView();
@@ -74,11 +51,25 @@ public class AllLeaderActivities extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
+				AlertDialog.Builder adb = new AlertDialog.Builder(AllLeaderEventsActivity.this);
+				adb.setTitle("Szczegó³y wydarzenia");
+				Wydarzenie temp = events.get(position);
+				StringBuilder sb = new StringBuilder();
+				sb.append("Tytu³:" + temp.getWydarzenia_Tytul().toString());
+				sb.append("\n");
+				sb.append("Data rozpoczêcia:" + temp.getWydarzenia_StartDate().toString());
+				sb.append("\n");
+				sb.append("Data zakoñczenia:" + temp.getWydarzenia_KoniecDate().toString());
+				sb.append("\n");
+				sb.append("Kolor:" + temp.getWydarzenia_Kolor().toString());
+				sb.append("\n");
+				sb.append("Notka:" + temp.getWydarzenia_Notka().toString());
+				sb.append("\n");
+				adb.setMessage(sb);
+				adb.setPositiveButton("Ok", null);
+				adb.show();
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(getApplicationContext(), PresentActivity.class);
-				Log.d("System", eventsList.get(position).get(TAG_PID).toString());
-				intent.putExtra("groupID", Integer.valueOf(eventsList.get(position).get(TAG_GROUPID)));
-				startActivity(intent);      
+				
 			}
 			
 		});
@@ -89,8 +80,8 @@ public class AllLeaderActivities extends ListActivity {
 
 		protected void onPreExecute(){
 			super.onPreExecute();
-			pDialog = new ProgressDialog(AllLeaderActivities.this);
-			pDialog.setMessage("Loading events. Please wait ...");
+			pDialog = new ProgressDialog(AllLeaderEventsActivity.this);
+			pDialog.setMessage("Przetwarzanie listy wydarzeñ. Proszê czekaæ ...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
@@ -103,16 +94,15 @@ public class AllLeaderActivities extends ListActivity {
 			SFSService service = new SFSService();
 			
 			try {
-				ArrayList<Wydarzenie> events = service.getEventsForUser(workerID);
+				events = service.getEventsForUser(workerID);
 				Collections.sort(events);
-				Log.d("sciema","niema");
 				for(int i = 0 ; i < events.size(); i++){
 					Wydarzenie temp = events.get(i);
 					HashMap<String,String> map = new HashMap<String,String>();
-					map.put(TAG_PID, temp.getWydarzenia_ID().toString());
-					map.put(TAG_TITLE, temp.getWydarzenia_Tytul().toString());
 					map.put(TAG_START_DATE, temp.getWydarzenia_StartDate().toString());
+					map.put(TAG_END_DATE, temp.getWydarzenia_KoniecDate().toString());
 					map.put(TAG_GROUPID, temp.getGrupa_ID().toString());
+					map.put(TAG_TITLE, temp.getWydarzenia_Tytul().toString());
 					eventsList.add(map);
 				}
 			} catch (SFSException sfs) {
@@ -132,8 +122,8 @@ public class AllLeaderActivities extends ListActivity {
 			pDialog.dismiss();
 			runOnUiThread(new Runnable(){
 				public void run(){
-					ListAdapter adapter = new SimpleAdapter(
-							AllLeaderActivities.this,eventsList,R.layout.list_item, new String[] {TAG_PID,TAG_TITLE,TAG_START_DATE},new int[]{R.id.pid,R.id.name,R.id.startDate});
+					ListAdapter adapter = new SpecialAdapter(
+							AllLeaderEventsActivity.this,eventsList,R.layout.activity_events_items, new String[] {TAG_START_DATE, TAG_END_DATE, TAG_GROUPID, TAG_TITLE,},new int[]{R.id.startDate, R.id.endDate, R.id.groupID, R.id.name});
 					setListAdapter(adapter);
 					
 				}

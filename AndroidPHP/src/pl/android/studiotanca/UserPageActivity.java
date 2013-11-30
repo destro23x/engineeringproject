@@ -1,13 +1,16 @@
-package com.example.androidphp;
+package pl.android.studiotanca;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+
+import com.example.androidphp.R;
  
-public class UserPage extends Activity {
+public class UserPageActivity extends Activity {
  
 	int workerID;
 	Button bntViewStudents;
@@ -39,24 +42,23 @@ public class UserPage extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				startActivity(new Intent(getApplicationContext(), AllStudentsActivity.class));
-				
 			}
 		});
+        
         bntViewStudents.setHint("lolololo");
         bntViewActivities.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(getApplicationContext(), AllLeaderActivities.class);
+				Intent intent = new Intent(getApplicationContext(), AllLeaderEventsActivity.class);
 				intent.putExtra("workerID", workerID);
 				startActivity(intent);
 				
 			}
 		});
         
-        bntNotifications.setOnClickListener(new View.OnClickListener() {
-			
+        bntNotifications.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -80,7 +82,7 @@ public class UserPage extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent intent = new Intent(getApplicationContext(), AllLeaderGroups.class);
+				Intent intent = new Intent(getApplicationContext(), AllLeaderGroupsActivity.class);
 				intent.putExtra("workerID", workerID);
 				startActivity(intent);
 				
@@ -94,11 +96,16 @@ public class UserPage extends Activity {
 				// TODO Auto-generated method stub
 	
 				Intent intent = new Intent(getApplicationContext(), LessonsActivity.class);
-				intent.putExtra("workerId", 3);
+				intent.putExtra("workerId", workerID);
 				startActivity(intent);
-				
 			}
 		});
         
+    }
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Window window = getWindow();
+        window.setFormat(PixelFormat.RGBA_8888);
     }
 }

@@ -1,7 +1,8 @@
-package com.example.androidphp;
+package pl.android.studiotanca;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.HashMap;
 
 import pl.sfs.model.Wydarzenie;
 import pl.sfs.service.SFSException;
@@ -13,31 +14,56 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import com.example.androidphp.R;
 
 public class LessonsActivity extends Activity {
 	ProgressDialog pDialog;
 	ArrayList<Wydarzenie> eventList;
-	LessonsActivity _this;
+	ArrayList<HashMap<String,String>> eventsList;
 	int workerId;
+	ListView view;
+	
+	
+	private static final String TAG_TITLE = "title";
+	private static final String TAG_START_DATE = "startDate";
+	private static final String TAG_END_DATE = "endDate";
+	private static final String TAG_GROUPID = "groupid";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lessons);
 		setupActionBar();
-		
+		view = (ListView)findViewById(R.id.lessonListView);
 		Bundle extras = getIntent().getExtras();
 		
         if(extras != null){
         	workerId = extras.getInt("workerId");
         }
+        eventsList = new ArrayList<HashMap<String,String>>();
+        
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				Wydarzenie wydarzenie = eventList.get(position);
+				
+				Intent intent = new Intent(LessonsActivity.this, PresenceActivity.class);
+				intent.putExtra("workerId", workerId);
+				intent.putExtra("presenceId", 0);
+				intent.putExtra("eventId", wydarzenie.getWydarzenia_ID());
+				intent.putExtra("groupId", wydarzenie.getGrupa_ID());
+				startActivity(intent);
+
+			}
+		});
+		
         
         new LoadLessons().execute("loadData", this);
 	}
@@ -49,74 +75,6 @@ public class LessonsActivity extends Activity {
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.lessons, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
-		if (eventList != null){
-		
-		ListView view = (ListView)findViewById(R.id.lessonListView);
-		
-		String[] wydarzenia = new String[eventList.size()];
-		int i = 0;
-		int lp = 1;
-		
-		for (Iterator<Wydarzenie> iterator = eventList.iterator(); iterator.hasNext();) {
-			Wydarzenie k = (Wydarzenie) iterator.next();			
-			
-			wydarzenia[i] = lp + ". Grupa " + k.getGrupa_ID().toString() + " - " + k.getWydarzenia_Tytul() + " - " + k.getWydarzenia_StartDate();
-			i++;
-			lp++;
-		}
-		
-		_this = this;
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,17367043, wydarzenia);
-		
-		view.setAdapter(adapter);
-		
-		view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				Wydarzenie wydarzenie = eventList.get(position);
-				
-				Intent intent = new Intent(_this, PresenceActivity.class);
-				intent.putExtra("workerId", workerId);
-				intent.putExtra("presenceId", 0);
-				intent.putExtra("eventId", wydarzenie.getWydarzenia_ID());
-				intent.putExtra("groupId", wydarzenie.getGrupa_ID());
-				startActivity(intent);
-
-			}
-		});
 		}
 	}
 	
@@ -142,6 +100,16 @@ public class LessonsActivity extends Activity {
 			try {
 				if (action.equals("loadData")){
 					eventList = service.getEventsForUser(workerId);
+					Collections.sort(eventList);
+					for(int i = 0 ; i < eventList.size(); i++){
+						Wydarzenie temp = eventList.get(i);
+						HashMap<String,String> map = new HashMap<String,String>();
+						map.put(TAG_START_DATE, temp.getWydarzenia_StartDate().toString());
+						map.put(TAG_END_DATE, temp.getWydarzenia_KoniecDate().toString());
+						map.put(TAG_GROUPID, temp.getGrupa_ID().toString());
+						map.put(TAG_TITLE, temp.getWydarzenia_Tytul().toString());
+						eventsList.add(map);
+					}
 				}
 				        
 			} catch (SFSException sfs) {
@@ -160,7 +128,10 @@ public class LessonsActivity extends Activity {
 		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
 			if (action.equals("loadData")){
-				parent.onResume();
+				//parent.onResume();
+				ListAdapter adapter = new SpecialAdapter(
+						LessonsActivity.this,eventsList,R.layout.activity_events_items, new String[] {TAG_START_DATE, TAG_END_DATE, TAG_GROUPID, TAG_TITLE,},new int[]{R.id.startDate, R.id.endDate, R.id.groupID, R.id.name});
+				view.setAdapter(adapter);
 			}
 		
 		}

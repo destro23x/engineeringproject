@@ -1,35 +1,25 @@
-package com.example.androidphp;
+package pl.android.studiotanca;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import pl.sfs.model.Grupa;
-import pl.sfs.model.Grupa_Kurs;
 import pl.sfs.model.Klient;
 import pl.sfs.service.SFSException;
 import pl.sfs.service.SFSService;
-
-import com.example.androidphp.AllLeaderGroups.LoadAllGroups;
-
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.example.androidphp.R;
 
 public class ContentGroup extends ListActivity {
 
@@ -37,6 +27,7 @@ public class ContentGroup extends ListActivity {
 	ListView lv;
 	ProgressDialog pDialog;
 	ArrayList<HashMap<String,String>> contentGroupsList;
+	ArrayList<Klient> clients;
 	
 	
 	//JSON Node names
@@ -59,7 +50,7 @@ public class ContentGroup extends ListActivity {
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.all_students);
+		setContentView(R.layout.listview);
 		
 		Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -74,10 +65,35 @@ public class ContentGroup extends ListActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				// TODO Auto-generated method stub
-				//Intent intent = new Intent(getApplicationContext(), ContentGroup.class);
-				//intent.putExtra("group", groupsList1.get(position).getIdGroup());
-				//startActivity(intent);
+				AlertDialog.Builder adb = new AlertDialog.Builder(ContentGroup.this);
+				adb.setTitle("Dane studenta");
+				Klient temp = clients.get(position);
+				StringBuilder sb = new StringBuilder();
+				sb.append("Imiê:" + temp.getKlienci_Imie().toString());
+				sb.append("\n");
+				sb.append("Nazwisko:" + temp.getKlienci_Nazwisko().toString());
+				sb.append("\n");
+				sb.append("Miasto:" + temp.getKlienci_Miasto().toString());
+				sb.append("\n");
+				sb.append("Ulica:" + temp.getKlienci_Ulica().toString());
+				sb.append("\n");
+				sb.append("Numer domu:" + temp.getKlienci_Numer_domu().toString());
+				sb.append("\n");
+				sb.append("Kod:" + temp.getKlienci_Kod().toString());
+				sb.append("\n");
+				sb.append("Pesel:" + temp.getKlienci_Pesel().toString());
+				sb.append("\n");
+				sb.append("Email:" + temp.getKlienci_Mail().toString());
+				sb.append("\n");
+				sb.append("Telefon:" + temp.getKlienci_Telefon().toString());
+				sb.append("\n");
+				sb.append("P³eæ:" + temp.getKlienci_Plec().toString());
+				sb.append("\n");
+				sb.append("Aktywnoœæ:" + temp.getKlienci_Aktywni().toString());
+				sb.append("\n");
+				adb.setMessage(sb);
+				adb.setPositiveButton("Ok", null);
+				adb.show();
 					
 			}
 			
@@ -90,7 +106,7 @@ public class ContentGroup extends ListActivity {
 		protected void onPreExecute(){
 			super.onPreExecute();
 			pDialog = new ProgressDialog(ContentGroup.this);
-			pDialog.setMessage("Loading content of group. Please wait ...");
+			pDialog.setMessage("Przetwarzam listê klientów. Proszê czekaæ ...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
@@ -102,12 +118,15 @@ public class ContentGroup extends ListActivity {
 			
 			SFSService service = new SFSService();
 			try {
-				ArrayList<Klient> clients = service.getClientsAssingToGroup(groupID);                 
+				clients = service.getClientsAssingToGroup(groupID);                 
 				for(int i = 0 ; i < clients.size(); i++){
 					Klient temp = clients.get(i);
 					HashMap<String,String> map = new HashMap<String,String>();
-					map.put(TAG_PID, temp.getKlienci_ID().toString());
 					map.put(TAG_SURNAME, temp.getKlienci_Nazwisko().toString());
+					map.put(TAG_NAME, temp.getKlienci_Imie().toString());
+					map.put(TAG_CITY, temp.getKlienci_Miasto().toString());
+					map.put(TAG_PHONE, temp.getKlienci_Telefon().toString());
+					map.put(TAG_MAIL, temp.getKlienci_Mail().toString());
 					contentGroupsList.add(map);
 				}
 			} catch (SFSException sfs) {
@@ -127,8 +146,8 @@ public class ContentGroup extends ListActivity {
 			pDialog.dismiss();
 			runOnUiThread(new Runnable(){
 				public void run(){
-					ListAdapter adapter = new SimpleAdapter(
-							ContentGroup.this,contentGroupsList,R.layout.list_item, new String[] {TAG_PID,TAG_SURNAME},new int[]{R.id.pid,R.id.name});
+					ListAdapter adapter = new SpecialAdapter(
+							ContentGroup.this,contentGroupsList,R.layout.activity_contentgroup_items, new String[] {TAG_SURNAME, TAG_NAME, TAG_CITY, TAG_PHONE, TAG_MAIL},new int[]{R.id.surname, R.id.name, R.id.city, R.id.phone, R.id.mail});
 					setListAdapter(adapter);
 					
 				}

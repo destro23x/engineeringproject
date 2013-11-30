@@ -1,58 +1,39 @@
-package com.example.androidphp;
+package pl.android.studiotanca;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import pl.sfs.model.Klient;
 import pl.sfs.model.Powiadomienie;
-import pl.sfs.model.Wydarzenie;
 import pl.sfs.service.SFSException;
 import pl.sfs.service.SFSService;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+
+import com.example.androidphp.R;
 
 public class NotificationsReadActivity extends ListActivity {
 	
 	ListView lv;
 	ProgressDialog pDialog;
 	ArrayList<HashMap<String,String>> notificationsList;
+	ArrayList<Powiadomienie> notifications;
 	
 	//JSON Node names
-	private static final String TAG_NAME = "name";
-	private static final String TAG_PID = "pid";
-	private static final String TAG_SURNAME = "surname";
-	private static final String TAG_PESEL = "pesel";
-	private static final String TAG_SEX = "sex";
-	private static final String TAG_PHONE = "phone";
-	private static final String TAG_MAIL = "mail";
-	private static final String TAG_STREET = "street";
-	private static final String TAG_CITY = "city";
-	private static final String TAG_HOUSE_NUMBER = "houseNumber";
-	private static final String TAG_CITYCODE = "cityCode";
-	private static final String TAG_ACTIVE = "active";
+	private static final String TAG_TITLE = "title";
+	private static final String TAG_EPIC = "epic";
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.all_students);
+		setContentView(R.layout.listview);
 		notificationsList = new ArrayList<HashMap<String,String>>();
 		lv = getListView();
 		new LoadAllNotifications().execute();
@@ -65,13 +46,16 @@ public class NotificationsReadActivity extends ListActivity {
 				// TODO Auto-generated method stub
 
 				AlertDialog.Builder adb = new AlertDialog.Builder(NotificationsReadActivity.this);
-				adb.setTitle("ListView OnClick");
-				adb.setMessage(notificationsList.get(position).toString() +
-						"Selected Item is = "
-				+ lv.getItemAtPosition(position) + " czyli " + position);
+				adb.setTitle("Szczegó³y powiadomienia");
+				Powiadomienie temp = notifications.get(position);
+				StringBuilder sb = new StringBuilder();
+				sb.append("Tytu³:" + temp.getPowiadomienia_Tytul().toString());
+				sb.append("\n");
+				sb.append("Opis:" + temp.getPowiadomienia_Tresc().toString());
+				sb.append("\n");
+				adb.setMessage(sb);
 				adb.setPositiveButton("Ok", null);
-				adb.show();               
-				
+				adb.show();
 				
 			}
 			
@@ -83,7 +67,7 @@ public class NotificationsReadActivity extends ListActivity {
 		protected void onPreExecute(){
 			super.onPreExecute();
 			pDialog = new ProgressDialog(NotificationsReadActivity.this);
-			pDialog.setMessage("Loading students. Please wait ...");
+			pDialog.setMessage("Przetwarzanie listy powiadomieñ. Proszê czekaæ ...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
@@ -94,12 +78,12 @@ public class NotificationsReadActivity extends ListActivity {
 			// TODO Auto-generated method stub
 			SFSService service = new SFSService();
 			try {
-				ArrayList<Powiadomienie> notifications = service.getNotifications();
+				notifications = service.getNotifications();
 				for(int i = 0 ; i < notifications.size(); i++){
 					Powiadomienie temp = notifications.get(i);
 					HashMap<String,String> map = new HashMap<String,String>();
-					map.put(TAG_PID, temp.getPowiadomienia_Tytul().toString());
-					map.put(TAG_NAME, temp.getPowiadomienia_Tresc().toString());
+					map.put(TAG_TITLE, temp.getPowiadomienia_Tytul().toString());
+					map.put(TAG_EPIC, temp.getPowiadomienia_Tresc().toString());
 					notificationsList.add(map);
 				}
 			} catch (SFSException sfs) {
@@ -119,8 +103,8 @@ public class NotificationsReadActivity extends ListActivity {
 			pDialog.dismiss();
 			runOnUiThread(new Runnable(){
 				public void run(){
-					ListAdapter adapter = new SimpleAdapter(
-							NotificationsReadActivity.this,notificationsList,R.layout.list_item, new String[] {TAG_PID,TAG_NAME},new int[]{R.id.pid,R.id.name});
+					ListAdapter adapter = new SpecialAdapter(
+							NotificationsReadActivity.this,notificationsList,R.layout.activity_notificationsread_items, new String[] {TAG_TITLE,TAG_EPIC},new int[]{R.id.title,R.id.epic});
 					setListAdapter(adapter);
 					
 				}
